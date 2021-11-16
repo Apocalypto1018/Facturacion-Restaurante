@@ -32,6 +32,8 @@ public final class Colaborador {
 
         this.usuario=Usuario;
         this.passWord=PassWord;
+        
+        this.rol=Rol;
     }
     
     //funcion que genero un id unico

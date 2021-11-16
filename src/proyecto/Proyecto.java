@@ -33,31 +33,54 @@ public class Proyecto {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        int opc=0;
 
         //primer usuario administrador...
-        arrayColaboradores.add(new Colaborador("gerente1", "1234", "Admin", "Admin", "123456789", 'g'));
+        arrayColaboradores.add(new Colaborador("gerente", "1234", "Admin", "Admin", "123456789", 'g'));
         //primer usuario mesero...
-        arrayColaboradores.add(new Colaborador("mesero1" ,"1234","Mesero1", "Mesero1", "123456789", 'm'));
+        arrayColaboradores.add(new Colaborador("mesero" , "1234","Mesero1", "Mesero1", "123456789", 'm'));
 
         do {
+            
+            System.out.print("   Bienvenido al Sistema del Restaurante\n\n");
+            System.out.print("*Ingrese 1 para ir al login\n");
+            System.out.print("*Ingrese 0 para salir\n->");
+            opc=sc.nextInt();
+            
+            sc.nextLine();
+            
+            switch(opc){
+                case 0:{
+                    System.out.println("Saliendo del sistema, Adios!!");
+                    salir=true;
+                    break;
+                }
+                case 1:{
+                    System.out.print("*Ingrese el usuario\n->");
+                    usuario = sc.nextLine();
 
-            System.out.print("*Ingrese el usuario\n->");
-            usuario = sc.nextLine();
+                    System.out.print("*Ingrese la contrasenia\n->");
+                    contrasenia = sc.nextLine();
 
-            System.out.print("*Ingrese la contrasenia\n->");
-            contrasenia = sc.nextLine();
+                    if (confirmarCredencialesGerente(usuario, contrasenia)) {
 
-            if (confirmarCredencialesGerente(usuario, contrasenia)) {
+                        menuGerente();
 
-                menuGerente();
+                    } else if (confirmarCredencialesMesero(usuario, contrasenia)) {
 
-            } else if (confirmarCredencialesMesero(usuario, contrasenia)) {
+                        menuMesero();
 
-                menuMesero();
+                    } else {
 
-            } else {
-
-                System.out.println("*Datos incorrectos, intente de nuevo (usuario admin: gerente contrasenia admin: 1234)");
+                        System.out.println("*Datos incorrectos, intente de nuevo \n(gerente admin: gerente contrasenia admin: 1234)"
+                                + "\n(mesero principal: mesero contrasenia: 1234)");
+                    }
+                    break;
+                }
+                default:{
+                    System.out.println("Parametro no valido, intente de nuevo");
+                    break;
+                }
             }
 
         } while (!salir);
@@ -66,9 +89,9 @@ public class Proyecto {
 
     public static boolean confirmarCredencialesGerente(String usuario, String contrasenia) {
 
-        for (int i = 0; i < arrayColaboradores.size(); i++) {
-            if (arrayColaboradores.get(i).getUsuario().equals(usuario) && arrayColaboradores.get(i).getContrasenia().equals(contrasenia)
-                    && arrayColaboradores.get(i).getRol() == 'g') {
+        for (Colaborador actual : arrayColaboradores) {
+            if (actual.getUsuario().equals(usuario) && actual.getContrasenia().equals(contrasenia) && actual.getRol()=='g') {
+            
                 return true;
             }
         }
@@ -77,9 +100,9 @@ public class Proyecto {
 
     public static boolean confirmarCredencialesMesero(String usuario, String contrasenia) {
 
-        for (int i = 0; i < arrayColaboradores.size(); i++) {
-            if (arrayColaboradores.get(i).getUsuario().equals(usuario) && arrayColaboradores.get(i).getContrasenia().equals(contrasenia)
-                    && arrayColaboradores.get(i).getRol() == 'm') {
+        for (Colaborador actual : arrayColaboradores) {
+            if (actual.getUsuario().equals(usuario) && actual.getContrasenia().equals(contrasenia) && actual.getRol()=='m') {
+            
                 return true;
             }
         }
@@ -94,7 +117,6 @@ public class Proyecto {
             System.out.println("1. Clientes");
             System.out.println("2. Ver Platillos");
             System.out.println("3. Facturacion");
-            System.out.println("4. llenar Platillos");
             System.out.print("0. Para cerrar sesion\n->");
             opcion=sc.nextInt();
             
@@ -120,12 +142,7 @@ public class Proyecto {
                     facturacion();
                     break;
                 }
-                
-                case 4:{
-                    llenarPlatillo();
-                    break;
-                }
-                
+
                 default:{
                     System.out.println("Parametro no valido, intente de nuevo");
                     break;
@@ -188,7 +205,7 @@ public class Proyecto {
         }while(opcion!=0);
     }
     
-    //ver platillos de mesero
+    //ver platillos 
     public static void submenuVerPlatillos(){
       
 	for (Platillo actual : arrayPlatillos) {
@@ -203,7 +220,7 @@ public class Proyecto {
         System.out.print("\n\n");
     }
     
-    //funcion factuar de mesero
+    //funcion factuar
     public static void facturacion(){
         ArrayList<String> arrayCodigosPedidos = new ArrayList<>();
 
@@ -323,7 +340,7 @@ public class Proyecto {
         
         //se llena el archivo con la factura
         
-        String texto="      FACTURA:"+"*NIT del cliente: "+nit+"   *Nombre del cliente: "
+        String texto="      FACTURA:"+"*NIT del cliente:\n "+nit+"   *Nombre del cliente: "
                 +nombreCliente+"   *Codigos de los platillos:"+codigosTotales+"   *Total a pagar: "+totalFacturar
                 +"   *Mesero: "+nombreMesero;
         
@@ -371,166 +388,304 @@ public class Proyecto {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    //menu gerente
     public static void menuGerente() {
 
-        int opcion = 0;
-        int nit;
-        char rol;
-        String nombre, apellido, direccion, telefono;
-
+        int opcion = -1;
         do {
-            System.out.println("1. Clientes.\n2. Colaboradores.\n "
-                    + "3. Carta de platillos.\n4. Facturacion.\n"
-                    + "5. Cerrar sesion.");
+            
+            System.out.println("1. Clientes.\n2. Colaboradores.\n"
+                    + "3. Llenar platillo.\n4. Ver platillos.\n"
+                    + "0. Cerrar sesion");
             opcion = sc.nextInt();
+            sc.nextLine();
             switch (opcion) {
                 case 1:
-                    int opcionCliente;
-                    do {
-                        System.out.println("1. Ingresar cliente.\n 2. Eliminar Cliente"
-                                + "\n3. Regrasar al menu principa.");
-                        opcionCliente = sc.nextInt();
-                        switch (opcionCliente) {
-                            case 0:{
-                                System.out.println("Volviendo al menu de Gerente");
-                                break;
-                            }
-                            case 1:
-                                System.out.println("Ingresar. ");
-                                System.out.println("Ingrese Datos del cliente");
-                                System.out.println("NIT: ");
-                                nit = sc.nextInt();
-                                
-                                sc.nextLine();
-                                
-                                System.out.println("Nombre: ");
-                                nombre = sc.nextLine();
-                                System.out.println("Apellido: ");
-                                apellido = sc.nextLine();
-                                System.out.println("Direccion: ");
-                                direccion = sc.nextLine();
-                                arrayClientes.add(new Cliente(nit, nombre, apellido, direccion));
-                                break;
-                            case 2:
-                                System.out.println("Eliminar.");
-                                System.out.println("Ingrese Datos del cliente");
-                                System.out.println("NIT: ");
-                                nit = sc.nextInt();
-                                
-                                sc.nextLine();
-                                
-                                System.out.println("Nombre: ");
-                                nombre = sc.nextLine();
-                                System.out.println("Apellido: ");
-                                apellido = sc.nextLine();
-                                System.out.println("Direccion: ");
-                                direccion = sc.nextLine();
-                                 {
-                                    int itera = 0;
-                                    int captura = -1;
-                                    for (Cliente actual : arrayClientes) {
-                                        if ((actual.getNIT() == nit) && (actual.getNombre().equalsIgnoreCase(nombre))
-                                                && (actual.getApellido().equalsIgnoreCase(apellido))
-                                                && (actual.getDireccion().equalsIgnoreCase(direccion))) {
-                                            captura = itera;
-                                        }
-                                        itera++;
-                                    }
-                                    if (captura != -1) {
-                                        arrayClientes.remove(captura);
-                                    }
-                                }
-                                break;
-                           
-                            default:
-                                System.out.println("Opcion no valida");
-
-                        }
-                    } while (opcion != 0);
+                    subMenuClienteG();
                     break;
 
                 case 2:
-                    int opcionColaborador;
-                    do {
-                        System.out.println("1. Ingresar colaborador.\n 2. Modificar colaborador"
-                                + "\n3. Eliminar colaborador.\n Volver a menu principal");
-                        opcionColaborador = sc.nextInt();
-                        switch (opcionColaborador) {
-                            case 1:
-                                System.out.println("Ingresar. ");
-                                System.out.println("Nombre: ");
-                                nombre = sc.nextLine();
-                                System.out.println("Apellido: ");
-                                apellido = sc.nextLine();
-                                System.out.println("Telefono: ");
-                                telefono = sc.nextLine();
-                                System.out.println("Rol: g/m");
-                                rol = sc.next().charAt(0);
-                                //arrayColaboradores.add(new Colaborador(nombre, apellido, telefono, rol));
-                                 {
-                                    int itera = 0;
-                                    int captura = -1;
-                                    for (Colaborador actual : arrayColaboradores) {
-                                        if ((actual.getNombre().equalsIgnoreCase(nombre))
-                                                && (actual.getApellido().equalsIgnoreCase(apellido))
-                                                && (actual.getTelefono().equalsIgnoreCase(telefono))) {
-                                            captura = itera;
-                                        }
-                                        itera++;
-                                    }
-                                    if (captura != -1) {
-                                        arrayClientes.remove(captura);
-                                    }
-                                }
-
-                                break;
-                            case 2:
-                                System.out.println("Eliminar.");
-                                System.out.println("Ingrese Datos del cliente");
-                                System.out.println("NIT: ");
-                                nit = sc.nextInt();
-                                System.out.println("Nombre: ");
-                                nombre = sc.nextLine();
-                                System.out.println("Apellido: ");
-                                apellido = sc.nextLine();
-                                System.out.println("Direccion: ");
-                                direccion = sc.nextLine();
-                                int itera = 0;
-                                int captura = -1;
-                                for (Cliente actual : arrayClientes) {
-                                    if ((actual.getNIT() == nit) && (actual.getNombre().equalsIgnoreCase(nombre))
-                                            && (actual.getApellido().equalsIgnoreCase(apellido))
-                                            && (actual.getDireccion().equalsIgnoreCase(direccion))) {
-                                        captura = itera;
-                                    }
-                                    itera++;
-                                }
-                                if (captura != -1) {
-                                    arrayClientes.remove(captura);
-                                }
-                                break;
-                            case 3:
-                                break;
-                            default:
-                                System.out.println("Opcion no valida");
-
-                        }
-                    } while (opcion != 3);
+                    subMenuColaboradoresG();
+                    break;
+                case 3:
+                    llenarPlatillo();
+                    break;
+                            
+                case 4:
+                    submenuVerPlatillos();
+                    break;
+                case 5:
+                    facturacion();
                     break;
             }
-        } while (opcion != 4);
+        } while (opcion != 0);
 
     }
+    
+    //sub menu de clientes del gerente
+    public static void subMenuClienteG() {
 
+        int nit;
+        String nombre, apellido, direccion;
+        char respuesta=' ';
+        int opcionCliente;
+        do {
+            System.out.println("1. Ingresar cliente.\n2. Eliminar Cliente. \n3. Ver lista de clientes."
+                    + "\n0. Regrasar al menu principa.");
+            opcionCliente = sc.nextInt();
+            switch (opcionCliente) {
+                case 0: {
+                    System.out.println("Volviendo al menu de Gerente");
+                    break;
+                }
+                case 1:
+                    System.out.println("Ingresar. ");
+                    System.out.println("Ingrese Datos del cliente");
+                    System.out.println("NIT: ");
+                    nit = sc.nextInt();
+
+                    sc.nextLine();
+
+                    System.out.println("Nombre: ");
+                    nombre = sc.nextLine();
+                    System.out.println("Apellido: ");
+                    apellido = sc.nextLine();
+                    System.out.println("Direccion: ");
+                    direccion = sc.nextLine();
+                    arrayClientes.add(new Cliente(nit, nombre, apellido, direccion));
+                    break;
+                case 2:{
+                    System.out.println("Eliminar.");
+                    System.out.println("Ingrese Datos del cliente");
+                    System.out.println("NIT: ");
+                    nit = sc.nextInt();
+                    sc.nextLine();
+
+                    int itera = 0;
+                    int captura = -1;
+                    for (Cliente actual : arrayClientes) {
+                        if ((actual.getNIT() == nit)) {
+                            captura = itera;
+                        }
+                        itera++;
+                    }
+                    if (captura != -1) {
+                        System.out.println("Nombre: "+arrayClientes.get(captura).getNombre());
+                        System.out.println("Apellido: "+arrayClientes.get(captura).getApellido());
+                        System.out.println("Direccion: "+arrayClientes.get(captura).getDireccion());
+                        System.out.println("Desea eliminar este cliente? s/n");
+                        respuesta=sc.next().charAt(0);
+                        arrayClientes.remove(captura);
+                        System.out.println("Cliente eliminado exitosamente");
+                    }
+                    
+                    break;
+                }
+                
+                case 3:{
+                    for (Cliente actual : arrayClientes) {
+              
+                        System.out.println("\n\n*NIT: " + actual.getNIT());
+                        System.out.println("*Nombre: " + actual.getNombre());
+                        System.out.println("*Apellido: " + actual.getApellido());
+                        System.out.println("*Direccion: " + actual.getDireccion());
+
+                    }
+        
+                    System.out.print("\n\n");
+                    break;
+                }
+
+                default:
+                    System.out.println("Opcion no valida");
+
+            }
+        } while (opcionCliente != 0);
+    }
+    
+    //sub menu de los colaboradores del gerente
+    public static void subMenuColaboradoresG() {
+        int opcionColaborador;
+        String user, pass, nombre, apellido, telefono, id;
+        char respuesta = ' ';
+        char rol;
+        do {
+            System.out.println("1. Ingresar colaborador.\n2. Modificar colaborador"
+                    + "\n3. Eliminar colaborador.\n4. Listar colaboradores. \n0. Volver a menu principal");
+            opcionColaborador = sc.nextInt();
+            sc.nextLine();
+            switch (opcionColaborador) {
+                case 0:{ 
+                    break;
+                }
+                case 1:
+                    System.out.println("Ingresar. ");
+                    System.out.println("User: ");
+                    user = sc.nextLine();
+                    System.out.println("Password: ");
+                    pass = sc.nextLine();
+                    System.out.println("Nombre: ");
+                    nombre = sc.nextLine();
+                    System.out.println("Apellido: ");
+                    apellido = sc.nextLine();
+                    System.out.println("Telefono: ");
+                    telefono = sc.nextLine();
+                    System.out.println("Rol: g/m");
+                    rol = sc.next().charAt(0);
+                    sc.nextLine();
+
+                    arrayColaboradores.add(new Colaborador(user, pass, nombre, apellido, telefono, rol));
+                     {
+                        int itera = 0;
+                        int captura = -1;
+                        for (Colaborador actual : arrayColaboradores) {
+                            if ((actual.getNombre().equalsIgnoreCase(nombre)) && (actual.getApellido().equalsIgnoreCase(apellido))
+                                    && (actual.getTelefono().equalsIgnoreCase(telefono))) {
+                                captura = itera;
+                            }
+                            itera++;
+                        }
+
+                        if (captura != -1) {
+                            System.out.println("Usuario registrado exitosamente");
+                            System.out.println("ID: " + arrayColaboradores.get(captura).getID());
+                        } else {
+                            System.out.println("Error inesperado al registrar usuario");
+                        }
+                    }
+                    break;
+                case 2:{
+                    System.out.println("Modificar colaborador");
+                    System.out.println("Ingrese ID del colaborador");
+                    id = sc.nextLine();
+                     
+                        int itera = 0;
+                        int captura = -1;
+                        for (Colaborador actual : arrayColaboradores) {
+                            if (actual.getID().equals(id)) {
+                                captura = itera;
+                            }
+                            itera++;
+                        }
+                        if (captura != -1) {
+                            modificaColaborador(captura);
+                        } else {
+                            System.out.println("No existen datos para el ID ingresado");
+                        }
+                    
+                    break;
+                }
+                case 3:{
+                    System.out.println("Eliminar colaborador");
+                    System.out.println("Ingrese el id del colaborador: ");
+                    id = sc.nextLine();
+                     
+                        int itera = 0;
+                        int captura = -1;
+                        for (Colaborador actual : arrayColaboradores) {
+                            if (actual.getID().equals(id)) {
+                                captura = itera;
+                            }
+                            itera++;
+                        }
+                        if (captura != -1) {
+                            System.out.println("Nombre: "+arrayColaboradores.get(captura).getNombre());
+                            System.out.println("Apellido: "+arrayColaboradores.get(captura).getApellido());
+                            System.out.println("Telefono: "+arrayColaboradores.get(captura).getTelefono());
+                            System.out.println("Rol: "+arrayColaboradores.get(captura).getRol());
+                            System.out.println("Desea eliminar a este colaborador? s/n");
+                            respuesta = sc.next().charAt(0);
+                            if (respuesta == 's') {
+                                arrayColaboradores.remove(captura);
+                                System.out.println("Colaborador eliminado exitosamente");
+                            } else {
+                                break;
+                            }
+                        } else {
+                            System.out.println("No existen datos para el ID ingresado");
+                        }
+                    
+                    break;
+                }  
+                case 4:{
+                    for (Colaborador actual : arrayColaboradores) {
+              
+                        System.out.println("\n\n*ID: " + actual.getID());
+                        System.out.println("*Nombre: " + actual.getNombre());
+                        System.out.println("*Apellido: " + actual.getApellido());
+                        System.out.println("*Rol: " + actual.getRol());
+
+                    }
+        
+                    System.out.print("\n\n");
+                    break;
+                }
+                default:
+                    System.out.println("Opcion no valida");
+
+            }
+        } while (opcionColaborador != 0);
+    }
+    
+    //sub menu para modificar los colaboradores
+    public static void modificaColaborador(int index) {
+        int opcionModifica = -1;
+        String user, pass, nombre, apellido, telefono;
+        char rol;
+        do {
+            System.out.println("1.User.\n2.Password.\n3. Nombre.\n4. Apellido"
+                    + "\n5. Telefono.\n6. Rol.\n0. volver.");
+            opcionModifica = sc.nextInt();
+            sc.nextLine();
+            switch (opcionModifica) {
+                case 0:
+                    System.out.println("Volviendo al menu anterior");
+                    break;
+                case 1:
+                    System.out.println("Nuevo user:");
+                    user = sc.nextLine();
+                    arrayColaboradores.get(index).setUsuario(user);
+                    break;
+                case 2:
+                    System.out.println("Nuevo password: ");
+                    pass = sc.nextLine();
+                    arrayColaboradores.get(index).setContrasenia(pass);
+                    break;
+                case 3:
+                    System.out.println("Nuevo nombre: ");
+                    nombre = sc.nextLine();
+                    arrayColaboradores.get(index).setNombre(nombre);
+                    break;
+                case 4:
+                    System.out.println("Nuevo apellido: ");
+                    apellido = sc.nextLine();
+                    arrayColaboradores.get(index).setApellido(apellido);
+                    break;
+                case 5:
+                    System.out.println("Nuevo password: ");
+                    telefono = sc.nextLine();
+                    arrayColaboradores.get(index).setTelefono(telefono);
+                    break;
+                case 6:
+                    System.out.println("Nuevo rol: ");
+                    rol = sc.next().charAt(0);
+                    arrayColaboradores.get(index).setRol(rol);
+                    break;
+                default:
+                    System.out.println("Ingrese una opcion valida");
+
+            }
+        } while (opcionModifica != 0);
+    }
 }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
