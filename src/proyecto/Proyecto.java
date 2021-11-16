@@ -395,7 +395,7 @@ public class Proyecto {
         do {
             
             System.out.println("1. Clientes.\n2. Colaboradores.\n"
-                    + "3. Llenar platillo.\n4. Ver platillos.\n"
+                    + "3. Llenar platillo.\n4. Ver platillos.\n.5fatura.\n"
                     + "0. Cerrar sesion");
             opcion = sc.nextInt();
             sc.nextLine();
