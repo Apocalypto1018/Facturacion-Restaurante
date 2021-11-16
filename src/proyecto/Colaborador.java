@@ -22,30 +22,16 @@ public final class Colaborador {
     private String passWord;
     private String usuario;
 
-    public Colaborador(String Nombre, String Apellido, String Telefono, char Rol){
+    public Colaborador(String Usuario, String PassWord, String Nombre, String Apellido, String Telefono, char Rol){
         
         this.id=generarID();
         
         this.nombre=Nombre;
         this.apellido=Apellido;
         this.telefono=Telefono;
-        
-        this.rol=darRol(Rol);
-        
-    }
-    
-    //funcion que da el rol, el usuario y la password
-    public char darRol(char Rol){
-        
-        if(Rol=='g'){
-            this.usuario="gerente";
-            this.passWord="1234";
-        }else{
-            this.usuario="mesero";
-            this.passWord="1234";
-        }
-        
-        return Rol;
+
+        this.usuario=Usuario;
+        this.passWord=PassWord;
     }
     
     //funcion que genero un id unico
@@ -71,10 +57,18 @@ public final class Colaborador {
                builder.append(palabra);
             }
         }
-      return builder.toString();
+        return builder.toString();
     }
     
     //setters
+    public void setUsuario(String Usuario){
+        this.usuario=Usuario;
+    }
+    
+    public void setContrasenia(String PassWord){
+        this.passWord=PassWord;
+    }
+    
     public void setNombre(String Nombre){
         this.nombre=Nombre;
     }
@@ -91,7 +85,6 @@ public final class Colaborador {
         this.rol=Rol;
     }
 
-    
     //getters
     public String getID(){
         return this.id;

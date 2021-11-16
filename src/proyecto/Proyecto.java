@@ -5,6 +5,11 @@
  */
 package proyecto;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -30,9 +35,9 @@ public class Proyecto {
         // TODO code application logic here
 
         //primer usuario administrador...
-        arrayColaboradores.add(new Colaborador("Admin", "Admin", "123456789", 'g'));
+        arrayColaboradores.add(new Colaborador("gerente1", "1234", "Admin", "Admin", "123456789", 'g'));
         //primer usuario mesero...
-        arrayColaboradores.add(new Colaborador("Mesero1", "Mesero1", "123456789", 'm'));
+        arrayColaboradores.add(new Colaborador("mesero1" ,"1234","Mesero1", "Mesero1", "123456789", 'm'));
 
         do {
 
@@ -303,6 +308,7 @@ public class Proyecto {
         }while(captura==-1);
         
         //mostrar factura en consola
+        String codigosTotales=" ";
         System.out.println("      FACTURA\n");
         System.out.println("*NIT del cliente: "+nit);
         System.out.println("*Nombre del cliente: "+nombreCliente);
@@ -310,9 +316,35 @@ public class Proyecto {
         for(int i=0;i<arrayCodigosPedidos.size();i++){
             nCodigo++;
             System.out.println("Codigo "+nCodigo+":"+arrayCodigosPedidos.get(i));
+            codigosTotales=codigosTotales+" Codigo "+nCodigo+":"+arrayCodigosPedidos.get(i);
         }
         System.out.println("*Total a pagar: "+totalFacturar);
         System.out.println("*Mesero: "+nombreMesero);
+        
+        //se llena el archivo con la factura
+        
+        String texto="      FACTURA:"+"*NIT del cliente: "+nit+"   *Nombre del cliente: "
+                +nombreCliente+"   *Codigos de los platillos:"+codigosTotales+"   *Total a pagar: "+totalFacturar
+                +"   *Mesero: "+nombreMesero;
+        
+        try {
+            File temp = new File(System.getProperty("java.io.tmpdir") + "Factura.txt");
+
+            FileOutputStream flujoSalida = new FileOutputStream(temp);
+            FileWriter fw = new FileWriter(temp);
+
+            for(int i=0;i<texto.length();i++){
+                flujoSalida.write(texto.charAt(i));
+            }
+            
+            fw.close();
+            flujoSalida.close();
+
+            Desktop.getDesktop().open(temp);
+           
+        }catch (IOException ex) {
+             ex.printStackTrace();
+        }
         
     }
     
@@ -445,7 +477,7 @@ public class Proyecto {
                                 telefono = sc.nextLine();
                                 System.out.println("Rol: g/m");
                                 rol = sc.next().charAt(0);
-                                arrayColaboradores.add(new Colaborador(nombre, apellido, telefono, rol));
+                                //arrayColaboradores.add(new Colaborador(nombre, apellido, telefono, rol));
                                  {
                                     int itera = 0;
                                     int captura = -1;
