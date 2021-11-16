@@ -38,11 +38,11 @@ public final class Colaborador {
     public char darRol(char Rol){
         
         if(Rol=='g'){
-            usuario="gerente";
-            passWord="1234";
+            this.usuario="gerente";
+            this.passWord="1234";
         }else{
-            usuario="mesero";
-            passWord="1234";
+            this.usuario="mesero";
+            this.passWord="1234";
         }
         
         return Rol;
