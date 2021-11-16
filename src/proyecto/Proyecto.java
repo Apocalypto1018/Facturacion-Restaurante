@@ -16,7 +16,7 @@ public class Proyecto {
 
     private static ArrayList<Colaborador> arrayColaboradores = new ArrayList<Colaborador>();
     private static ArrayList<Cliente> arrayClientes = new ArrayList<Cliente>();
-    private static ArrayList<Platillo> arrayPlatillo = new ArrayList<Platillo>();
+    private static ArrayList<Platillo> arrayPlatillos = new ArrayList<Platillo>();
     private static Scanner sc = new Scanner(System.in);
 
     private static boolean salir = false;
@@ -89,7 +89,8 @@ public class Proyecto {
             System.out.println("1. Clientes");
             System.out.println("2. Ver Platillos");
             System.out.println("3. Facturacion");
-            System.out.print("0. Salir\n->");
+            System.out.println("4. llenar Platillos");
+            System.out.print("0. Para cerrar sesion\n->");
             opcion=sc.nextInt();
             
             sc.nextLine();
@@ -107,6 +108,22 @@ public class Proyecto {
                 
                 case 2:{
                     submenuVerPlatillos();
+                    break;
+                }
+                
+                case 3:{
+                    facturacion();
+                    break;
+                }
+                
+                case 4:{
+                    llenarPlatillo();
+                    break;
+                }
+                
+                default:{
+                    System.out.println("Parametro no valido, intente de nuevo");
+                    break;
                 }
             }
             
@@ -137,6 +154,7 @@ public class Proyecto {
                 case 1:{
                     System.out.println("Ingresar. ");
                     System.out.println("Ingrese Datos del cliente");
+                    
                     System.out.println("NIT: ");
                     nit = sc.nextInt();
                     
@@ -144,11 +162,19 @@ public class Proyecto {
                     
                     System.out.println("Nombre: ");
                     nombre = sc.nextLine();
+                    
                     System.out.println("Apellido: ");
                     apellido = sc.nextLine();
+                    
                     System.out.println("Direccion: ");
                     direccion = sc.nextLine();
+                    
                     arrayClientes.add(new Cliente(nit, nombre, apellido, direccion));
+                    break;
+                }
+                
+                default:{
+                    System.out.println("Parametro no valido, intente de nuevo");
                     break;
                 }
                 
@@ -160,17 +186,159 @@ public class Proyecto {
     //ver platillos de mesero
     public static void submenuVerPlatillos(){
       
-	for (Platillo actual : arrayPlatillo) {
+	for (Platillo actual : arrayPlatillos) {
               
             System.out.println("\n\n*Codigo: " + actual.getCodigo());
             System.out.println("*Nombre: " + actual.getNombre());
             System.out.println("*Descripcion: " + actual.getDescripcion());
-            System.out.println("*Descripcion: " + actual.getPrecio());
+            System.out.println("*Precio: " + actual.getPrecio());
           
 	}
-  
+        
+        System.out.print("\n\n");
     }
+    
+    //funcion factuar de mesero
+    public static void facturacion(){
+        ArrayList<String> arrayCodigosPedidos = new ArrayList<>();
 
+        int nit=0;
+        int itera=0;
+        int captura = -1;
+        float totalFacturar=0;
+        
+        int masPedidos=0;
+        
+        int nCodigo=0;
+
+        String nombreMesero;
+        String nombreCliente;
+        String codigo;
+        
+        //buscar el NIT del cliente a facturar
+        System.out.print("*Ingrese el NIT del cliente\n->");
+        nit=sc.nextInt();
+
+        sc.nextLine();
+       
+        for (Cliente actual : arrayClientes) {
+            if ((actual.getNIT() == nit)) {
+                captura = itera;
+            }
+            itera++;
+        }
+        
+        if(captura!=-1){
+            nombreCliente=arrayClientes.get(captura).getNombre();
+            
+        }else{
+            System.out.println("Cliente no registrado (aparecera en la factura como CF)");
+            nombreCliente="CF";
+            nit=0;
+        }
+        
+        //pedir los codigos de los platillos para facturar
+        do{
+            System.out.println("*Ingrese 1 para registrar nuevo codigo de pedido en la factura");
+            System.out.print("*Ingrese 0 para terminar de registrar codigos en la factura\n->");
+            masPedidos=sc.nextInt();
+            
+            sc.nextLine();
+            
+            switch(masPedidos){
+                case 0:{
+                    System.out.println("Continuando con la factura...");
+                    break;
+                }
+                
+                case 1:{
+                    System.out.print("*Ingrese el codigo del platillo\n->");
+                    codigo=sc.nextLine();
+                    
+                    for (Platillo actual : arrayPlatillos) {
+                        if (actual.getCodigo().equals(codigo)) {
+                            captura = itera;
+                        }
+                        itera++;
+                    }
+
+                    if(captura!=-1){
+                        arrayCodigosPedidos.add(codigo); //se guarda el codigo del platillo
+                        
+                        totalFacturar+=arrayPlatillos.get(captura).getPrecio(); //se acumula el precio del platillo
+                        captura=-1;
+                        itera=0;
+                    }else{
+                        System.out.println("Platillo no registrado");
+                        captura=-1;
+                        itera=0;
+                    }  
+                    break;
+                }   
+                
+                default:{
+                    System.out.println("Parametro no valido, intente de nuevo");
+                    break;
+                }
+                
+            }
+            
+        }while(masPedidos!=0);
+        
+        //pedir nombre del mesero
+        do{
+            System.out.print("*Ingrese el Nombre del mesero a asociar en la factura\n->");
+            nombreMesero=sc.nextLine();
+
+            for (Colaborador actual : arrayColaboradores) {
+                if (actual.getNombre().equals(nombreMesero)) {
+                    captura = itera;
+                }
+                itera++;
+            }
+
+            if(captura==-1){
+                System.out.println("El nombre del mesero a asociar no aparece, intente otra ves");
+            }
+        }while(captura==-1);
+        
+        //mostrar factura en consola
+        System.out.println("      FACTURA\n");
+        System.out.println("*NIT del cliente: "+nit);
+        System.out.println("*Nombre del cliente: "+nombreCliente);
+        System.out.println("*Codigos de los platillos:");
+        for(int i=0;i<arrayCodigosPedidos.size();i++){
+            nCodigo++;
+            System.out.println("Codigo "+nCodigo+":"+arrayCodigosPedidos.get(i));
+        }
+        System.out.println("*Total a pagar: "+totalFacturar);
+        System.out.println("*Mesero: "+nombreMesero);
+        
+    }
+    
+    //funcion que llena los platillos
+    public static void llenarPlatillo(){
+        String nombre;
+        String descripcion;
+        float precio=0;
+
+        System.out.println("Ingrese Datos del Platillo");
+        
+        System.out.print("Nombre:\n->");
+        nombre = sc.nextLine();
+
+        System.out.print("Descripcion:\n->");
+        descripcion = sc.nextLine();
+        
+        System.out.print("Precio:\n->");
+        precio = sc.nextFloat();
+        
+        sc.nextLine();
+        
+        arrayPlatillos.add(new Platillo(nombre, descripcion, precio));
+    }
+    
+    
     
     
     
